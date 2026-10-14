@@ -1,0 +1,418 @@
+{
+  "run_date": "2026-10-14",
+  "shop_date": "2026-08-31",
+  "model": "gpt-6-luna via Portkey",
+  "starting_checking_balance": 3400.0,
+  "ending_checking_balance": 160.0,
+  "ending_balance_matches_database": true,
+  "tickets": [
+    {
+      "id": 101,
+      "title": "Bulldog tee \u2014 Tauhid Zaman",
+      "final_status": "resolved",
+      "resolved_on_pass": 3,
+      "passes_needed": 3,
+      "short_outcome": "Keep Tauhid\u2019s size-S order unchanged pending their choice. Size S cannot be filled now. Customer Service has drafted\u2014but not sent\u2014a follow-up offering the unconfirmed earliest restock estimate of September 5 or available sizes M, L, and XL. No payment is needed. Ticket closed because the shop\u2019s present work is complete; it is awaiting Tauhid\u2019s preference and the owner\u2019s decision whether/when to send the saved draft.",
+      "awaiting_human": "Decide whether and when to send Customer Service\u2019s saved follow-up draft; Tauhid\u2019s preference is also needed before changing or fulfilling the order.",
+      "agent_contributions": {
+        "Boss": [
+          "list_open_tickets",
+          "resolve_ticket"
+        ],
+        "Inventory": [
+          "list_open_tickets",
+          "check_stock",
+          "check_vendor_can_ship"
+        ],
+        "Accounting": [
+          "list_money_due",
+          "check_vendor_can_ship",
+          "list_payment_requests",
+          "list_open_tickets",
+          "request_payment"
+        ],
+        "Customer Service": [
+          "list_open_tickets",
+          "check_stock",
+          "save_draft_message"
+        ]
+      },
+      "delegation_chains_final_pass": [
+        "Boss \u2192 Inventory",
+        "Boss \u2192 Accounting",
+        "Boss \u2192 Customer Service",
+        "Customer Service \u2192 Inventory",
+        "Customer Service \u2192 Boss"
+      ],
+      "boss_called_first_final_pass": "Inventory",
+      "human_approvals": [
+        {
+          "request_id": 1,
+          "kind": "invoice",
+          "ref_id": 501,
+          "payee": "Bulldog Print Co",
+          "amount": 840.0,
+          "reason": "Pay overdue invoice 501 for Bulldog Print Co rush reprint CC-TEE-WHITE S; vendor shipment is blocked until this invoice is paid.",
+          "cash_before": 3400.0,
+          "cash_after": 2560.0,
+          "approved_by": "Rias Reed",
+          "during_ticket": 101
+        }
+      ],
+      "cash_change": -840.0,
+      "cash_after_ticket": 160.0,
+      "total_tokens_all_passes": 159525,
+      "passes": [
+        {
+          "pass": 1,
+          "run_id": "run-20261014T041022-a7dc46",
+          "resolved": false,
+          "status_after": "open",
+          "boss_called_first": "Inventory",
+          "delegation_order": [
+            "Inventory",
+            "Accounting",
+            "Customer Service",
+            "Boss"
+          ],
+          "delegation_chains": [
+            "Boss \u2192 Inventory",
+            "Boss \u2192 Accounting",
+            "Boss \u2192 Customer Service",
+            "Customer Service \u2192 Boss"
+          ],
+          "depth_limit_refusals": 4,
+          "tools_by_agent": {
+            "Boss": [
+              "list_open_tickets"
+            ],
+            "Inventory": [
+              "list_open_tickets",
+              "check_stock",
+              "check_vendor_can_ship"
+            ],
+            "Accounting": [
+              "list_money_due",
+              "check_vendor_can_ship",
+              "list_payment_requests",
+              "list_open_tickets",
+              "request_payment"
+            ],
+            "Customer Service": [
+              "list_open_tickets",
+              "check_stock",
+              "save_draft_message"
+            ]
+          },
+          "agents_that_never_woke": [
+            "Facilities"
+          ],
+          "decision": "Do not promise or fulfil a size S tee now: there are none on hand, and the reprint is blocked pending human approval of payment request #1 for invoice 501 ($840). Ask Rias Reed to approve request #1. Accounting says rent ($2,400, due 2026-09-02) should be included in the same approval batch because cash covers both; however, no rent payment request has been raised here, so that batch is not yet ready. Tell Tauhid the size is unavailable and no restock date can be promised while blocked; the customer-service draft is saved, not sent. Once the vendor is unblocked, Inventory estimates earliest delivery 2026-09-05, not a guarantee.",
+          "awaiting_human": "Rias Reed must approve payment request #1 for $840. A rent payment request for $2,400 on ticket 102 still needs to be raised so both obligations can be approved in the same batch; until then the vendor remains blocked. The customer-service draft also awaits human review and sending.",
+          "tokens": 49030
+        },
+        {
+          "pass": 2,
+          "run_id": "run-20261014T041231-630db9",
+          "resolved": false,
+          "status_after": "open",
+          "boss_called_first": "Inventory",
+          "delegation_order": [
+            "Inventory",
+            "Customer Service",
+            "Boss"
+          ],
+          "delegation_chains": [
+            "Boss \u2192 Inventory",
+            "Boss \u2192 Customer Service",
+            "Customer Service \u2192 Boss",
+            "Customer Service \u2192 Inventory"
+          ],
+          "depth_limit_refusals": 2,
+          "tools_by_agent": {
+            "Boss": [
+              "list_open_tickets"
+            ],
+            "Inventory": [
+              "check_stock",
+              "check_vendor_can_ship",
+              "list_open_tickets"
+            ],
+            "Customer Service": [
+              "list_open_tickets",
+              "save_draft_message"
+            ]
+          },
+          "agents_that_never_woke": [
+            "Accounting",
+            "Facilities"
+          ],
+          "decision": "Keep ticket 101 open. Size S cannot be supplied now; the saved customer draft offers Tauhid the choice to wait while timing is confirmed, choose an available size substitution, or consider other options. Do not promise a restock date or allocate another size without the customer\u2019s confirmation.",
+          "awaiting_human": "No payment action. Customer Service\u2019s draft is saved but unsent; customer confirmation is needed on waiting for size S while timing is confirmed, substituting an in-stock size, or another option.",
+          "tokens": 48327
+        },
+        {
+          "pass": 3,
+          "run_id": "run-20261014T041420-b34604",
+          "resolved": true,
+          "status_after": "resolved",
+          "boss_called_first": "Inventory",
+          "delegation_order": [
+            "Inventory",
+            "Accounting",
+            "Customer Service",
+            "Boss"
+          ],
+          "delegation_chains": [
+            "Boss \u2192 Inventory",
+            "Boss \u2192 Accounting",
+            "Boss \u2192 Customer Service",
+            "Customer Service \u2192 Inventory",
+            "Customer Service \u2192 Boss"
+          ],
+          "depth_limit_refusals": 1,
+          "tools_by_agent": {
+            "Boss": [
+              "list_open_tickets",
+              "resolve_ticket"
+            ],
+            "Accounting": [
+              "list_open_tickets",
+              "list_money_due",
+              "list_payment_requests"
+            ],
+            "Customer Service": [
+              "list_open_tickets",
+              "save_draft_message"
+            ],
+            "Inventory": [
+              "check_stock",
+              "list_open_tickets",
+              "check_vendor_can_ship"
+            ]
+          },
+          "agents_that_never_woke": [
+            "Facilities"
+          ],
+          "decision": "Keep Tauhid\u2019s size-S order unchanged pending their choice. Size S cannot be filled now. Customer Service has drafted\u2014but not sent\u2014a follow-up offering the unconfirmed earliest restock estimate of September 5 or available sizes M, L, and XL. No payment is needed. Ticket closed because the shop\u2019s present work is complete; it is awaiting Tauhid\u2019s preference and the owner\u2019s decision whether/when to send the saved draft.",
+          "awaiting_human": "Decide whether and when to send Customer Service\u2019s saved follow-up draft; Tauhid\u2019s preference is also needed before changing or fulfilling the order.",
+          "tokens": 62168
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "title": "Rent due \u2014 Elm City Properties",
+      "final_status": "resolved",
+      "resolved_on_pass": 1,
+      "passes_needed": 1,
+      "short_outcome": "Raised rent payment request 2 for $2,400.00 to Elm City Properties. It is pending Rias Reed\u2019s approval; no money has moved. Ticket 102 is resolved as awaiting that approval.",
+      "awaiting_human": "Rias Reed must approve payment request 2 for $2,400.00 to Elm City Properties.",
+      "agent_contributions": {
+        "Boss": [
+          "list_open_tickets",
+          "resolve_ticket"
+        ],
+        "Accounting": [
+          "list_money_due",
+          "list_payment_requests",
+          "list_open_tickets",
+          "request_payment"
+        ]
+      },
+      "delegation_chains_final_pass": [
+        "Boss \u2192 Accounting"
+      ],
+      "boss_called_first_final_pass": "Accounting",
+      "human_approvals": [
+        {
+          "request_id": 2,
+          "kind": "rent",
+          "ref_id": 1,
+          "payee": "Elm City Properties",
+          "amount": 2400.0,
+          "reason": "Chapel Street shop rent due 2026-09-02; rent priority.",
+          "cash_before": 2560.0,
+          "cash_after": 160.0,
+          "approved_by": "Rias Reed",
+          "during_ticket": 102
+        }
+      ],
+      "cash_change": -2400.0,
+      "cash_after_ticket": 160.0,
+      "total_tokens_all_passes": 20550,
+      "passes": [
+        {
+          "pass": 1,
+          "run_id": "run-20261014T041033-fd0c4e",
+          "resolved": true,
+          "status_after": "resolved",
+          "boss_called_first": "Accounting",
+          "delegation_order": [
+            "Accounting"
+          ],
+          "delegation_chains": [
+            "Boss \u2192 Accounting"
+          ],
+          "depth_limit_refusals": 0,
+          "tools_by_agent": {
+            "Boss": [
+              "list_open_tickets",
+              "resolve_ticket"
+            ],
+            "Accounting": [
+              "list_money_due",
+              "list_payment_requests",
+              "list_open_tickets",
+              "request_payment"
+            ]
+          },
+          "agents_that_never_woke": [
+            "Inventory",
+            "Facilities",
+            "Customer Service"
+          ],
+          "decision": "Raised rent payment request 2 for $2,400.00 to Elm City Properties. It is pending Rias Reed\u2019s approval; no money has moved. Ticket 102 is resolved as awaiting that approval.",
+          "awaiting_human": "Rias Reed must approve payment request 2 for $2,400.00 to Elm City Properties.",
+          "tokens": 20550
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "title": "Bulk hoodie discount \u2014 Yale AI Club",
+      "final_status": "resolved",
+      "resolved_on_pass": 1,
+      "passes_needed": 1,
+      "short_outcome": "Do not make a customer offer yet. No discount price has been proposed, and we cannot promise the 12-unit remainder or its delivery date until Inventory confirms the inbound timing. Ticket 103 was marked resolved with these blockers recorded; no order, price, or customer message was completed.",
+      "awaiting_human": "Decide whether to pursue a partial offer after Inventory verifies the inbound quantity/date, and provide or approve a specific compliant unit price before any customer offer is made.",
+      "agent_contributions": {
+        "Boss": [
+          "list_open_tickets",
+          "resolve_ticket"
+        ],
+        "Accounting": [
+          "list_open_tickets",
+          "quote_discount"
+        ],
+        "Inventory": [
+          "check_stock",
+          "list_open_tickets",
+          "check_vendor_can_ship"
+        ],
+        "Customer Service": [
+          "list_open_tickets"
+        ]
+      },
+      "delegation_chains_final_pass": [
+        "Boss \u2192 Accounting",
+        "Boss \u2192 Inventory",
+        "Boss \u2192 Customer Service",
+        "Customer Service \u2192 Inventory",
+        "Customer Service \u2192 Accounting",
+        "Customer Service \u2192 Boss"
+      ],
+      "boss_called_first_final_pass": "Accounting",
+      "human_approvals": [],
+      "cash_change": 0,
+      "cash_after_ticket": 160.0,
+      "total_tokens_all_passes": 69725,
+      "passes": [
+        {
+          "pass": 1,
+          "run_id": "run-20261014T041047-6394ee",
+          "resolved": true,
+          "status_after": "resolved",
+          "boss_called_first": "Accounting",
+          "delegation_order": [
+            "Accounting",
+            "Inventory",
+            "Customer Service",
+            "Boss"
+          ],
+          "delegation_chains": [
+            "Boss \u2192 Accounting",
+            "Boss \u2192 Inventory",
+            "Boss \u2192 Customer Service",
+            "Customer Service \u2192 Inventory",
+            "Customer Service \u2192 Accounting",
+            "Customer Service \u2192 Boss"
+          ],
+          "depth_limit_refusals": 2,
+          "tools_by_agent": {
+            "Boss": [
+              "list_open_tickets",
+              "resolve_ticket"
+            ],
+            "Accounting": [
+              "list_open_tickets",
+              "quote_discount"
+            ],
+            "Inventory": [
+              "check_stock",
+              "list_open_tickets",
+              "check_vendor_can_ship"
+            ],
+            "Customer Service": [
+              "list_open_tickets"
+            ]
+          },
+          "agents_that_never_woke": [
+            "Facilities"
+          ],
+          "decision": "Do not make a customer offer yet. No discount price has been proposed, and we cannot promise the 12-unit remainder or its delivery date until Inventory confirms the inbound timing. Ticket 103 was marked resolved with these blockers recorded; no order, price, or customer message was completed.",
+          "awaiting_human": "Decide whether to pursue a partial offer after Inventory verifies the inbound quantity/date, and provide or approve a specific compliant unit price before any customer offer is made.",
+          "tokens": 69725
+        }
+      ]
+    }
+  ],
+  "human_approvals": [
+    {
+      "request_id": 1,
+      "kind": "invoice",
+      "ref_id": 501,
+      "payee": "Bulldog Print Co",
+      "amount": 840.0,
+      "reason": "Pay overdue invoice 501 for Bulldog Print Co rush reprint CC-TEE-WHITE S; vendor shipment is blocked until this invoice is paid.",
+      "cash_before": 3400.0,
+      "cash_after": 2560.0,
+      "approved_by": "Rias Reed",
+      "during_ticket": 101,
+      "ticket_id": 101
+    },
+    {
+      "request_id": 2,
+      "kind": "rent",
+      "ref_id": 1,
+      "payee": "Elm City Properties",
+      "amount": 2400.0,
+      "reason": "Chapel Street shop rent due 2026-09-02; rent priority.",
+      "cash_before": 2560.0,
+      "cash_after": 160.0,
+      "approved_by": "Rias Reed",
+      "during_ticket": 102,
+      "ticket_id": 102
+    }
+  ],
+  "payments_in_database": [
+    {
+      "id": 1,
+      "kind": "invoice",
+      "ref_id": 501,
+      "amount": 840.0,
+      "account": "checking",
+      "paid_at": "2026-08-31",
+      "approved_by": "Rias Reed"
+    },
+    {
+      "id": 2,
+      "kind": "rent",
+      "ref_id": 1,
+      "amount": 2400.0,
+      "account": "checking",
+      "paid_at": "2026-08-31",
+      "approved_by": "Rias Reed"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Campus Customs — Homework 5
+# One environment runs the MCP server, the agent team, and the FastAPI backend.
+#   python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+
+fastmcp>=4.0.0              # the MCP server in mcp_server/
+pydantic-ai-slim[openai,mcp]>=2.56.0   # the five agents, talking to MCP
+python-dotenv>=1.0.0        # loads PORTKEY_API_KEY from .env
+fastapi>=0.115.0            # backend/main.py
+uvicorn[standard]>=0.32.0   # serves the backend on port 8000

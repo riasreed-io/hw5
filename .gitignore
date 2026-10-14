@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+
+# Frontend
+node_modules/
+dist/
+.env.local
+
+# Never commit the real key. .env.example shows what belongs in it.
+.env.*
+!.env.example
+*.tsbuildinfo
+.claude/

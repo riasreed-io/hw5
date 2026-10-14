@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Campus Customs - Desk Tickets</title>
+<style>
+  :root {
+    --ink: #11151c; --muted: #5b6676; --line: #d9dee6; --bg: #f6f7f9;
+    --card: #ffffff; --accent: #00356b; --warn: #8a5300; --good: #1d6a3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 24px 64px; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid var(--line); margin-bottom: 0; }
+  .tab {
+    appearance: none; border: 1px solid var(--line); border-bottom: none; background: #eceff3;
+    color: var(--muted); padding: 10px 16px; font-size: 14px; font-weight: 600;
+    border-radius: 8px 8px 0 0; cursor: pointer; position: relative; top: 2px;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--card); color: var(--accent); border-color: var(--line); top: 2px; box-shadow: 0 -2px 0 var(--accent) inset; }
+  .panel { display: none; background: var(--card); border: 1px solid var(--line); border-top: none; border-radius: 0 0 10px 10px; padding: 24px 26px 30px; }
+  .panel.on { display: block; }
+  h2 { font-size: 19px; margin: 0 0 2px; }
+  .meta { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .facts { background: #f3f6fa; border: 1px solid #dde5ef; border-radius: 8px; padding: 12px 16px; margin-bottom: 22px; font-size: 14px; }
+  .facts b { color: var(--accent); }
+  .facts ul { margin: 6px 0 0; padding-left: 18px; }
+  section { margin-bottom: 26px; }
+  .label { display: inline-block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+  .label.exp { background: #e4edf7; color: var(--accent); }
+  .label.act { background: #f0ece2; color: var(--warn); }
+  .q { font-weight: 600; margin: 14px 0 4px; font-size: 14px; }
+  .a { margin: 0 0 4px; }
+  .derived { color: var(--muted); font-size: 13px; font-style: italic; }
+  .blank { border: 1px dashed #c3ccd8; border-radius: 8px; padding: 18px; color: var(--muted); font-size: 14px; background: #fcfcfd; }
+  .soon { padding: 40px 20px; text-align: center; color: var(--muted); }
+  table.tools, table.cash { width: 100%; border-collapse: collapse; font-size: 13px; margin: 6px 0 14px; }
+  table.tools td { padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.tools td:first-child { width: 140px; color: var(--accent); }
+  table.cash th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px; border-bottom: 2px solid var(--line); }
+  table.cash td { padding: 9px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+  table.cash td.neg { color: #a02c3a; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.cash tr.total td { border-top: 2px solid var(--accent); font-weight: 600; }
+  code { background: #eef1f5; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  ul.verdict { margin: 6px 0 0; padding-left: 0; list-style: none; }
+  ul.verdict li { font-size: 13px; line-height: 1.5; padding: 7px 10px 7px 30px; margin-bottom: 6px; border-radius: 8px; position: relative; }
+  ul.verdict li.hit { background: #eef7f0; } ul.verdict li.miss { background: #fdf2ec; }
+  ul.verdict li::before { position: absolute; left: 10px; font-weight: 700; }
+  ul.verdict li.hit::before { content: "✓"; color: #1d6a3a; } ul.verdict li.miss::before { content: "✗"; color: #b1480f; }
+  .chip.resolved-chip { background: #e4f3e8; color: #1d6a3a; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; text-transform: uppercase; letter-spacing: .05em; }
+  p.note { font-size: 12.5px; line-height: 1.55; color: var(--muted); background: #f7f5ef; border-left: 3px solid #d9c89a; padding: 10px 14px; border-radius: 0 8px 8px 0; margin: 4px 0 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Campus Customs - Desk Tickets</h1>
+  <p class="sub">Homework 5, Problems 6, 9 and 10. What I expect the agent team to do on each open ticket, written before the agents ran, against what they actually did on the 2026-10-14 run. Shop date: 2026-08-31.</p>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-panel="t101">Ticket 101</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="t102">Ticket 102</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="t103">Ticket 103</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="cash">Cash</button>
+    <button class="tab" role="tab" aria-selected="false" data-panel="reflect">Reflection</button>
+  </div>
+
+  <!-- ===================== 101 ===================== -->
+  <div class="panel on" id="t101">
+    <h2>Ticket 101 - Bulldog tee</h2>
+    <p class="meta">customer_order &middot; Tauhid Zaman &middot; CC-TEE-WHITE, size S, qty 1 &middot; links to invoice 501</p>
+    <div class="facts">
+      <b>What the board shows</b>
+      <ul>
+        <li>Size S: <b>0 on hand</b> (M=5, L=3, XL=2)</li>
+        <li>Only apparel vendor: Bulldog Print Co, 5-day lead</li>
+        <li>Invoice 501: 840.00, due 2026-08-28, <b>3 days overdue</b> - vendor blocked until paid</li>
+      </ul>
+    </div>
+
+    <section>
+      <span class="label exp">Expected</span>
+      <p class="q">Who the Boss should call first, and why</p>
+      <p class="a">I think it will call on accounting first because it needs to be paid to be executed, and also inventory because to make sure the right size is in stock.</p>
+      <p class="q">Delegations I expect</p>
+      <p class="a">Accounting and Inventory. <span class="derived">Not expected: Facilities, Customer Service.</span></p>
+      <p class="q">MCP tools I expect this run to use</p>
+      <p class="a">Tools similar to the inventory ones, and the pay feature tools.</p>
+    </section>
+
+    <section>
+      <span class="label act">Actual</span>
+      <p class="q">Who the Boss actually called first</p>
+      <p class="a"><b>Inventory</b>, not Accounting. The Boss read the board and went to stock first, on all three passes.</p>
+      <p class="q">Delegations that actually happened</p>
+      <p class="a">Inventory, then Accounting, then Customer Service. Customer Service then went back to Inventory and to the Boss on its own. <b>Facilities never woke up.</b><br><span class="derived">Final-pass chain: Boss → Inventory · Boss → Accounting · Boss → Customer Service · Customer Service → Inventory · Customer Service → Boss · 1 further hops refused at the depth limit.</span></p>
+      <p class="q">MCP tools actually used</p>
+      <p class="a">Nine distinct tools across the three passes, including both the payment request and the draft:</p>
+      <table class="tools">      <tr><td><b>Boss</b></td><td><code>list_open_tickets</code> <code>resolve_ticket</code></td></tr>
+      <tr><td><b>Inventory</b></td><td><code>list_open_tickets</code> <code>check_stock</code> <code>check_vendor_can_ship</code></td></tr>
+      <tr><td><b>Accounting</b></td><td><code>list_money_due</code> <code>check_vendor_can_ship</code> <code>list_payment_requests</code> <code>list_open_tickets</code> <code>request_payment</code></td></tr>
+      <tr><td><b>Customer Service</b></td><td><code>list_open_tickets</code> <code>check_stock</code> <code>save_draft_message</code></td></tr>
+</table>
+      <p class="q">Outcome</p>
+      <p class="a">Keep Tauhid’s size-S order unchanged pending their choice. Size S cannot be filled now. Customer Service has drafted—but not sent—a follow-up offering the unconfirmed earliest restock estimate of September 5 or available sizes M, L, and XL. No payment is needed. Ticket closed because the shop’s present work is complete; it is awaiting Tauhid’s preference and the owner’s decision whether/when to send the saved draft.</p>
+      <p class="a"><span class="chip resolved-chip">Resolved</span> after 3 passes · 159,525 tokens · cash change $840.00</p>
+      <p class="note">This ticket stayed open on passes 1 and 2 because the Boss prompt said never to close a ticket whose work is not done, and the tee physically arrives 2026-09-05. The prompt was changed between pass 2 and pass 3 to allow closing when the only thing left is outside the shop's hands, with the outstanding item named in the resolution. Pass 3 then resolved it.</p>
+      <p class="q">Plan vs. reality</p>
+      <ul class="verdict"><li class="miss"><b>First call: missed.</b> I said Accounting because the invoice has to be paid; the Boss went to Inventory first to establish there was no stock at all.</li><li class="hit"><b>Delegations: partly right.</b> I named Inventory and Accounting and both were used — but I did not expect Customer Service, which drafted to Tauhid.</li><li class="hit"><b>Tools: right in spirit.</b> I said "inventory tools and the pay tools" and the run used check_stock, check_vendor_can_ship, request_payment — plus save_draft_message, which I did not predict.</li><li class="miss"><b>Not predicted:</b> this ticket needed three passes. The first two left it open.</li></ul>
+    </section>
+  </div>
+
+  <!-- ===================== 102 ===================== -->
+  <div class="panel" id="t102">
+    <h2>Ticket 102 - Rent due</h2>
+    <p class="meta">rent_notice &middot; Elm City Properties &middot; links to lease 1</p>
+    <div class="facts">
+      <b>What the board shows</b>
+      <ul>
+        <li>Chapel Street shop, rent <b>2400.00</b>, next due 2026-09-02 - <b>2 days out</b></li>
+        <li>Checking balance: 3400.00</li>
+        <li>Invoice 501 (840.00) is competing for the same cash</li>
+      </ul>
+    </div>
+
+    <section>
+      <span class="label exp">Expected</span>
+      <p class="q">Who the Boss should call first, and why</p>
+      <p class="a">I think facilities should be called first because this involves rent.</p>
+      <p class="q">Delegations I expect</p>
+      <p class="a">Facilities, and I do think accounting should also be called because it involves money. <span class="derived">Not expected: Inventory, Customer Service.</span></p>
+      <p class="q">MCP tools I expect this run to use</p>
+      <p class="a">Might be related to request payment, or list money due type of tools.</p>
+    </section>
+
+    <section>
+      <span class="label act">Actual</span>
+      <p class="q">Who the Boss actually called first</p>
+      <p class="a"><b>Accounting.</b> Facilities — the agent whose entire job is the lease — was never called.</p>
+      <p class="q">Delegations that actually happened</p>
+      <p class="a">One delegation, Boss → Accounting, and nothing else. The leanest run of the three.<br><span class="derived">Final-pass chain: Boss → Accounting · 0 further hops refused at the depth limit.</span></p>
+      <p class="q">MCP tools actually used</p>
+      <p class="a">Five tools, all money-side:</p>
+      <table class="tools">      <tr><td><b>Boss</b></td><td><code>list_open_tickets</code> <code>resolve_ticket</code></td></tr>
+      <tr><td><b>Accounting</b></td><td><code>list_money_due</code> <code>list_payment_requests</code> <code>list_open_tickets</code> <code>request_payment</code></td></tr>
+</table>
+      <p class="q">Outcome</p>
+      <p class="a">Raised rent payment request 2 for $2,400.00 to Elm City Properties. It is pending Rias Reed’s approval; no money has moved. Ticket 102 is resolved as awaiting that approval.</p>
+      <p class="a"><span class="chip resolved-chip">Resolved</span> after 1 pass · 20,550 tokens · cash change $2,400.00</p>
+      
+      <p class="q">Plan vs. reality</p>
+      <ul class="verdict"><li class="miss"><b>First call: missed.</b> I said Facilities because it is rent; the Boss treated it as a cash question and went to Accounting.</li><li class="miss"><b>Delegations: half right.</b> I expected Facilities <i>and</i> Accounting. Only Accounting ran. My instinct that money needs Accounting was right; my instinct that rent needs Facilities was not shared by the Boss.</li><li class="hit"><b>Tools: right.</b> I said request_payment and list_money_due types — the run used exactly those, plus list_payment_requests and resolve_ticket.</li></ul>
+    </section>
+  </div>
+
+  <!-- ===================== 103 ===================== -->
+  <div class="panel" id="t103">
+    <h2>Ticket 103 - Bulk hoodie discount</h2>
+    <p class="meta">price_override &middot; Yale AI Club &middot; CC-HOOD-NAVY, size M, qty 20</p>
+    <div class="facts">
+      <b>What the board shows</b>
+      <ul>
+        <li>Size M: <b>8 on hand</b> against 20 wanted - <b>12 short</b> (S=4, L=14, XL=6)</li>
+        <li>Cost 22.00, list 58.00 - 1160.00 at list; no price named by the customer</li>
+        <li>The 12 missing units route to Bulldog Print Co - the same vendor blocked by invoice 501</li>
+      </ul>
+    </div>
+
+    <section>
+      <span class="label exp">Expected</span>
+      <p class="q">Who the Boss should call first, and why</p>
+      <p class="a">I think inventory gets called first because it needs to be in stock for it to go any further.</p>
+      <p class="q">Delegations I expect</p>
+      <p class="a">Inventory, and also accounting is needed because it needs to be resolved with financials. <span class="derived">Not expected: Facilities, Customer Service.</span></p>
+      <p class="q">MCP tools I expect this run to use</p>
+      <p class="a">Similar MCP tools will get called, like inventory related ones, and the ones as it relates to list payment requests as well.</p>
+    </section>
+
+    <section>
+      <span class="label act">Actual</span>
+      <p class="q">Who the Boss actually called first</p>
+      <p class="a"><b>Accounting</b>, not Inventory. The Boss treated a discount request as a pricing question before a stock question.</p>
+      <p class="q">Delegations that actually happened</p>
+      <p class="a">Accounting, then Inventory, then Customer Service — and Customer Service consulted both Inventory and Accounting itself before replying. <b>Facilities never woke up.</b><br><span class="derived">Final-pass chain: Boss → Accounting · Boss → Inventory · Boss → Customer Service · Customer Service → Inventory · Customer Service → Accounting · Customer Service → Boss · 2 further hops refused at the depth limit.</span></p>
+      <p class="q">MCP tools actually used</p>
+      <p class="a">Six tools, led by the margin maths:</p>
+      <table class="tools">      <tr><td><b>Boss</b></td><td><code>list_open_tickets</code> <code>resolve_ticket</code></td></tr>
+      <tr><td><b>Accounting</b></td><td><code>list_open_tickets</code> <code>quote_discount</code></td></tr>
+      <tr><td><b>Inventory</b></td><td><code>check_stock</code> <code>list_open_tickets</code> <code>check_vendor_can_ship</code></td></tr>
+      <tr><td><b>Customer Service</b></td><td><code>list_open_tickets</code></td></tr>
+</table>
+      <p class="q">Outcome</p>
+      <p class="a">Do not make a customer offer yet. No discount price has been proposed, and we cannot promise the 12-unit remainder or its delivery date until Inventory confirms the inbound timing. Ticket 103 was marked resolved with these blockers recorded; no order, price, or customer message was completed.</p>
+      <p class="a"><span class="chip resolved-chip">Resolved</span> after 1 pass · 69,725 tokens · cash change $0.00 (none)</p>
+      
+      <p class="q">Plan vs. reality</p>
+      <ul class="verdict"><li class="miss"><b>First call: missed.</b> I said Inventory because it has to be in stock to go further; the Boss priced it first.</li><li class="hit"><b>Delegations: right on both.</b> Inventory and Accounting were both needed, exactly as I expected — plus Customer Service, which I did not name.</li><li class="miss"><b>Tools: half right.</b> I expected inventory tools (correct: check_stock, check_vendor_can_ship) and list_payment_requests — that one was never called on this ticket, because no payment arose. quote_discount, which I did not name, did the real work.</li></ul>
+    </section>
+  </div>
+
+  <!-- ===================== CASH ===================== -->
+  <div class="panel" id="cash">
+    <h2>Cash</h2>
+    <p class="meta">Every dollar that moved during the 2026-10-14 run, in order. Agents can only request; each line below was released by a human clicking approve.</p>
+    <div class="facts"><b>Starting checking balance after reset:</b> $3,400.00</div>
+    <table class="cash">
+      <tr><th>Step</th><th>What moved</th><th>Why</th><th>Amount</th><th>Balance</th></tr>
+      <tr><td>Reset</td><td>—</td><td>Working database restored from the original</td><td>—</td><td><b>$3,400.00</b></td></tr>
+      <tr><td>Ticket 101</td><td>Invoice 501 paid to Bulldog Print Co</td><td>The overdue reprint bill was blocking the only apparel vendor. Accounting raised request #1; approved by Rias Reed.</td><td class="neg">−$840.00</td><td><b>$2,560.00</b></td></tr>
+      <tr><td>Ticket 102</td><td>Rent paid to Elm City Properties</td><td>Chapel Street lease, due 2026-09-02. Accounting raised request #2; approved by Rias Reed. Lease next_due rolled to 2026-10-02.</td><td class="neg">−$2,400.00</td><td><b>$160.00</b></td></tr>
+      <tr><td>Ticket 103</td><td>Nothing moved</td><td>No discount was agreed and no restock was ordered, so no payment was raised. Resolved with the decision recorded instead.</td><td>$0.00</td><td><b>$160.00</b></td></tr>
+      <tr class="total"><td colspan="3">Ending checking balance</td><td class="neg">−$3,240.00</td><td><b>$160.00</b></td></tr>
+    </table>
+    <div class="facts"><b>Check:</b> 3,400.00 − 840.00 − 2,400.00 = <b>160.00</b>. Queried directly from <code>cash_accounts</code> in <code>data/campus_customs_new.db</code> after the run: <b>$160.00</b> — matches.
+    <ul><li>Two rows in <code>payments</code>, both stamped <code>approved_by = "Rias Reed"</code></li>
+    <li><code>invoices.501.status</code> → <code>paid</code></li>
+    <li><code>leases.1.next_due</code> → <code>2026-10-02</code></li></ul></div>
+  </div>
+
+  <!-- ===================== REFLECTION ===================== -->
+  <div class="panel" id="reflect">
+    <h2>Reflection</h2>
+    <p class="meta">Homework 5, Problem 10. My read on the agent team after the 2026-10-14 run, using the ticket tabs and the cash tab on this page as the evidence.</p>
+
+    <section>
+      <span class="label exp">1 · How I would evaluate the agents on each ticket</span>
+      <p class="a">They would have to be <b>accurate</b>, <b>efficient</b>, and do it by
+      <b>only calling the right agents</b>. It has to be <b>super super accurate on the
+      financials</b> and <b>quick to answer</b>. It also has to <b>address the specifics of
+      the ticket — all aspects of it</b>. That is how I would evaluate it, and here is what
+      each of those looks like against the three tickets I actually ran.</p>
+
+      <p class="q">Accurate</p>
+      <p class="a">Every number the agents reported came back matching the database. On
+      ticket 101 Inventory reported size S at <b>0 on hand</b> against the 1 the customer
+      wanted, and that is exactly what <code>inventory</code> says. On 103 it reported
+      <b>8 of 20</b> in size M — 12 short — and that is right too. Nobody invented a size,
+      a vendor, or a date. The one date that got quoted, 2026-09-05 for the reprint, came
+      from <code>check_vendor_can_ship</code> adding Bulldog Print Co's 5-day lead to the
+      shop's own date, and Customer Service was careful to call it an estimate rather than a
+      promise. That is the standard: if I cannot find the number in the database, the agent
+      should not have said it.</p>
+
+      <p class="q">Super accurate on the financials</p>
+      <p class="a">This is the one I care most about, and it is the one the run did best.
+      Look at the cash tab: <b>3,400.00 → 2,560.00 → 160.00</b>, and the ending balance
+      matches <code>cash_accounts</code> exactly. The 840.00 Accounting asked for on ticket
+      101 is exactly what invoice 501 says is owed, and the 2,400.00 on ticket 102 is exactly
+      the lease. Neither was rounded, estimated, or bundled. Both payments are sitting in
+      <code>payments</code> stamped <b>approved by Rias Reed</b>, not by an agent. If the
+      cash tab did not reconcile to the penny I would call the whole run a failure even with
+      three green Resolved chips on the board, because a shop that cannot trust its own
+      balance cannot use any of the rest of it.</p>
+
+      <p class="q">Only calling the right agents</p>
+      <p class="a">Ticket 102 is the clean example of this working: one delegation, Boss to
+      Accounting, nothing else, and <b>Facilities, Inventory and Customer Service all stayed
+      asleep</b>. Tickets 101 and 103 pulled in three specialists each, which I think is fair
+      given both of them were blocked on two different things at once — stock and money. The
+      measure I would use is whether every agent that got woken up actually contributed
+      something to the answer. On 103, Customer Service was called and then could not write
+      anything, because no price had been agreed. That is a wasted wake-up, and it is the
+      kind of thing I would tighten.</p>
+
+      <p class="q">Quick</p>
+      <p class="a">Ticket 102 resolved in <b>one pass and 20,550 tokens</b>. Ticket 103 took
+      <b>69,725 tokens</b> — more than three times as much — and still did not produce a
+      price. Ticket 101 needed <b>three passes and 159,525 tokens</b> before it closed. So
+      "quick" is not the same for all three, and the spread is the interesting part: the
+      ticket with one specialist was the fastest and the cleanest, and the ticket with the
+      most back-and-forth cost the most and delivered the least.</p>
+
+      <p class="q">Addressing all aspects of the ticket</p>
+      <p class="a">This is where I would mark them down. Ticket 103 asked two things — can we
+      do 20 in M, and can we do a bulk discount — and the run answered the stock half
+      (12 short) but closed without a price, because the Yale AI Club never named one and
+      Accounting would not invent one. Ticket 101 ended with a draft to Tauhid that was
+      written but not sent, so the customer still has not actually heard anything. Both are
+      defensible, and both are also unfinished from the customer's point of view. A ticket
+      that resolves with the work recorded is better than one that resolves with a guess, but
+      it is not the same as done.</p>
+    </section>
+
+    <section>
+      <span class="label act">2 · How the actual run compared to the plan I wrote</span>
+      <p class="q">101 — Bulldog tee</p>
+      <p class="a">I got it mostly right, but the order of it was different, so it did call
+      on Customer Service after all — that was wrong with my prediction. I said Accounting
+      first because the invoice has to be paid; the Boss went to <b>Inventory</b> first on all
+      three passes, to establish there was no stock at all before touching the money.</p>
+      <p class="q">102 — Rent due</p>
+      <p class="a">The tools I predicted did actually get used, but I was wrong about
+      Facilities being called on, which was overlooked by me initially. I named
+      <code>request_payment</code> and <code>list_money_due</code> and those are exactly what
+      ran — but they ran inside <b>Accounting</b>, and Facilities never woke up at all on its
+      own ticket.</p>
+      <p class="q">103 — Bulk hoodie discount</p>
+      <p class="a">I got the right agents and inventory tools, but I did miss the order and
+      Customer Service being called altogether, as well as the
+      <code>list_payment_requests</code> tool, so that was also miscalculated on my end for
+      the prediction. The Boss led with <b>Accounting</b> and <code>quote_discount</code>
+      rather than Inventory, and <code>list_payment_requests</code> never ran because no
+      payment ever came up on this ticket.</p>
+      <p class="q">The pattern underneath all three</p>
+      <p class="a">I predicted <b>who owns the subject</b>. The Boss routed by <b>what blocks
+      the ticket</b>. On 101 the blocker was stock before money, so Inventory led. On 102 the
+      blocker was cash, so Accounting led and Facilities was redundant. On 103 the blocker was
+      a price nobody had named, so Accounting led. It did surprise me how well it actually ran
+      on its own — it is quite proficient. I would change the prompts to be more systematic
+      about how it is going to decide on calling agents, so the structure is quite clear and
+      there isn't some guessing, and especially no mistakes: read the ticket, name the
+      blocker, call the agent who owns <i>that</i>. I think the token usage is okay for a
+      first few runs and it will get more efficient over time — though the honest version of
+      that is that the agents have no memory between runs, so the efficiency has to come from
+      me rewriting the prompts, not from them learning.</p>
+    </section>
+
+    <section>
+      <span class="label exp">3 · What would have been simpler as one agent with tools</span>
+      <p class="a">I think it would have been simpler with some tasks and a full range of
+      tools. Some of these tickets aren't all that complex, so it seems like they could be
+      handled by one agent.</p>
+      <p class="a"><b>Ticket 102 is the proof.</b> The entire run was Boss → Accounting →
+      <code>list_money_due</code> → <code>request_payment</code> → <code>resolve_ticket</code>.
+      That is one agent's worth of work with four tools, wrapped in a five-agent team. The
+      delegation added a whole extra model conversation — the Boss writing a question,
+      Accounting reading it, Accounting writing a report, the Boss reading it — to a ticket
+      whose answer was "the rent is 2,400.00, it is due in two days, we have 2,560.00, raise
+      the request."</p>
+      <p class="a">The waste shows up in the trail in two concrete ways. First,
+      <code>list_open_tickets</code> gets called over and over by different agents in the same
+      run, because each specialist re-reads the board instead of being handed what the Boss
+      already read. Second, the depth limit fired several times per ticket — agents trying to
+      chain further than two hops and being refused. One agent holding all ten tools would not
+      re-read anything and could not delegate in a circle.</p>
+      <p class="a">Where I would keep the team is ticket 101 and 103, where two genuinely
+      different kinds of expertise collide: a stock question and a money question that block
+      each other. Even then, the honest split is probably <b>three</b> agents — a Boss, an
+      operations agent covering stock and vendors, and a money agent — rather than five.
+      Facilities never woke up once across the whole run, which is a strong hint that it did
+      not need to exist as its own agent for this shop.</p>
+    </section>
+
+    <section>
+      <span class="label exp">4 · Three new problems this team could solve with the tools I built</span>
+      <p class="q">A multi-item inventory inquiry across several orders</p>
+      <p class="a">Somebody asks whether we can cover four different items at once — say the
+      tee in S, the hoodie in L, the cap, and the mug. The tools already handle this:
+      <code>check_stock</code> works per sku and size and returns the shortfall, and
+      <code>check_vendor_can_ship</code> tells you who restocks each one and whether they are
+      blocked. It is ticket 101's work repeated four times. The one thing that makes it
+      interesting is that <code>CC-MUG-CREST</code> is at 0 and routes to a different vendor
+      (Elm City Gifts, 3-day lead) than the apparel, so Inventory would have to come back with
+      two different restock dates in one answer.</p>
+      <p class="q">A bulk quote where the customer actually names a price</p>
+      <p class="a">This is ticket 103 with the missing piece supplied. The run stalled because
+      the Yale AI Club never said what they wanted to pay, and Accounting would not invent a
+      number. If a customer writes "we want 20 hoodies at 40 each," <code>quote_discount</code>
+      answers it immediately: against a 22.00 cost and 58.00 list, 40.00 is a 31% discount off
+      list leaving 18.00 margin a unit and 360.00 on the order, comfortably above the cost
+      floor. Accounting could approve or counter it on the spot, and Customer Service could
+      draft the reply, without a single new tool.</p>
+      <p class="q">A size change before the order is placed</p>
+      <p class="a">A customer wants a certain size, then changes their mind and wants a
+      different size before they place the order. Tauhid on ticket 101 is one message away
+      from exactly this: he wants S, which is at 0, and the draft already offers him M, L or
+      XL, which are at 5, 3 and 2. If he replies "make it M," the team needs
+      <code>check_stock</code> to confirm the M, <code>update_inventory</code> to take one off
+      the shelf with a reason on the record, <code>save_draft_message</code> to confirm back to
+      him, and <code>resolve_ticket</code> to close it. All four already exist, and no money
+      moves, so no approval is needed.</p>
+    </section>
+
+    <section>
+      <span class="label act">5 · Three problems this team could not solve, and what it would take</span>
+      <p class="q">A refund</p>
+      <p class="a">They could not handle a refund. Everything in this shop is built to move
+      cash one direction: <code>approve_and_pay</code> subtracts from checking, and the
+      assignment even says cash only goes out because revenue was never modelled. There is no
+      tool that puts money back, and no record of the customer ever having paid in the first
+      place — <code>payments</code> only holds what the shop paid out, both rows of it
+      (840.00 and 2,400.00) going to a vendor and a landlord. To do it I would need a
+      <code>refund_payment</code> tool that writes a credit and <i>increases</i>
+      <code>cash_accounts.balance</code>, a customer-orders table to refund against, and the
+      same human approval gate pointed the other way — a refund is money moving, so no agent
+      should be able to release one either. I would also want Inventory in the loop through
+      <code>check_inventory</code> so we can offer an alternative to the order the customer
+      does not want any more, rather than just handing the money back.</p>
+      <p class="q">A wrong order that gets returned</p>
+      <p class="a">I don't think the tools can handle a wrong order that they return as well.
+      It needs everything the refund needs, plus the physical side. Right now
+      <code>update_inventory</code> can put a unit back on the shelf, but nothing records that
+      a return is <i>in transit</i>, nothing issues a shipping label, and nothing tracks
+      whether the item actually arrived before the money goes back. I would need tools to
+      handle shipping, returns, refunding and apologising — a <code>start_return</code> that
+      opens an RMA, a <code>receive_return</code> that confirms the item is physically back
+      and only then restocks it, a shipping tool for the label and the cost, and the refund
+      tool above. The team would also need a Returns or Logistics agent, because that work is
+      not Inventory's counting job and not Accounting's ledger job — it sits between them, and
+      on this run neither one would have picked it up.</p>
+      <p class="q">Somebody offering to buy the shop</p>
+      <p class="a">I don't think they could handle something where someone wanted to purchase
+      or acquire the company. Nothing in this database can answer whether an offer is good.
+      There is one cash account at 160.00, one lease, three vendors and four SKUs — no
+      revenue, no profit and loss, no history, no idea what the brand or the Chapel Street
+      location is worth. Accounting's entire financial picture is "what do we owe and can we
+      cover it," which is the wrong question entirely. I would need tools that assess the
+      company's performance against the offer: revenue and margin history over time, a
+      valuation tool, the full obligation picture including the remaining lease term, and
+      something to model the offer against all of it. And I would need a new agent for it —
+      a Finance or Strategy agent — because this is a decision about the shop's future rather
+      than about a ticket on the board, and the Boss as written is built to clear tickets, not
+      to sell the business.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('on', p.id === tab.dataset.panel));
+  }));
+</script>
+</body>
+</html>

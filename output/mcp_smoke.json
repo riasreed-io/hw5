@@ -1,0 +1,178 @@
+{
+  "assignment": "MGT 409 Homework 5 - Problem 4: add the MCP server to the vibe coder and test each tool",
+  "recorded_at": "2026-10-13T22:55:12-04:00",
+  "mcp_config_used": ".mcp.json (campus-customs -> mcp_server/server.py)",
+  "how_these_were_run": "Each prompt was given to a headless Claude Code (vibe coder) session started with `claude -p \"<prompt>\" --mcp-config .mcp.json --allowedTools mcp__campus-customs__<tool> --output-format stream-json`. The tool_arguments and tool_output below are copied verbatim out of that session's stream, so they are the vibe coder's real MCP calls, not hand-written.",
+  "database_under_test": "data/campus_customs_new.db",
+  "shop_date_today": "2026-08-31",
+  "all_tools_read_only": true,
+  "tests": [
+    {
+      "prompt_to_vibe_coder": "ticket 101 wants 1 CC-TEE-WHITE in size S - do we have it? only use the campus customs mcp tool",
+      "tool_name": "mcp__campus-customs__check_stock",
+      "tool_arguments": {
+        "sku": "CC-TEE-WHITE",
+        "size": "S",
+        "qty_needed": 1
+      },
+      "tool_output": {
+        "found": true,
+        "sku": "CC-TEE-WHITE",
+        "rows": [
+          {
+            "sku": "CC-TEE-WHITE",
+            "name": "Classic Bulldog Tee",
+            "size": "S",
+            "qty": 0,
+            "location": "Aisle B"
+          }
+        ],
+        "other_sizes": [
+          {
+            "size": "L",
+            "qty": 3
+          },
+          {
+            "size": "M",
+            "qty": 5
+          },
+          {
+            "size": "S",
+            "qty": 0
+          },
+          {
+            "size": "XL",
+            "qty": 2
+          }
+        ],
+        "qty_needed": 1,
+        "on_hand": 0,
+        "can_fill": false,
+        "shortfall": 1
+      },
+      "ticket_this_unlocks": "101 (and 103)",
+      "vibe_coder_answer": "**No, we can't fill ticket 101.** We have 0 of CC-TEE-WHITE (Classic Bulldog Tee) in size S, so we're 1 unit short. Size S is normally kept in Aisle B.\n\nOther sizes in stock:\n- M: 5\n- L: 3\n- XL: 2\n\nYou could offer the customer a size M instead, or check whether a vendor can ship an S.",
+      "database_cross_check": {
+        "queried_directly_against": "data/campus_customs_new.db",
+        "sql": "SELECT qty FROM inventory WHERE sku='CC-TEE-WHITE' AND size='S'",
+        "result": 0,
+        "matches_tool_output": true,
+        "comparison": "tool qty=0 vs db qty=0"
+      }
+    },
+    {
+      "prompt_to_vibe_coder": "what does the shop owe right now and does the cash cover it? only use the campus customs mcp tool",
+      "tool_name": "mcp__campus-customs__list_money_due",
+      "tool_arguments": {},
+      "tool_output": {
+        "date_today": "2026-08-31",
+        "accounts": [
+          {
+            "name": "checking",
+            "balance": 3400,
+            "date": "2026-08-31"
+          }
+        ],
+        "cash_available": 3400,
+        "obligations": [
+          {
+            "kind": "invoice",
+            "ref_id": 501,
+            "owed_to": "Bulldog Print Co",
+            "vendor_id": 1,
+            "amount": 840,
+            "due_date": "2026-08-28",
+            "days_until_due": -3,
+            "overdue": true,
+            "status": "open",
+            "description": "Rush reprint CC-TEE-WHITE S"
+          },
+          {
+            "kind": "rent",
+            "ref_id": 1,
+            "owed_to": "Elm City Properties",
+            "amount": 2400,
+            "due_date": "2026-09-02",
+            "days_until_due": 2,
+            "overdue": false,
+            "space_name": "Chapel Street shop"
+          }
+        ],
+        "total_due": 3240,
+        "cash_after_paying_all": 160,
+        "cash_covers_everything": true,
+        "payments_already_made": []
+      },
+      "ticket_this_unlocks": "102",
+      "vibe_coder_answer": "Yes, the cash covers it, but only barely. The shop owes $3,240 and has $3,400 in checking, so $160 would be left after paying everything.\n\n| Owed to | What | Amount | Due | Status |\n|---|---|---|---|---|\n| Bulldog Print Co | Invoice #501, rush reprint of CC-TEE-WHITE S | $840 | Aug 28, 2026 | **3 days overdue** |\n| Elm City Properties | Rent for the Chapel Street shop | $2,400 | Sep 2, 2026 | Due in 2 days |\n| **Total** | | **$3,240** | | |\n\n- **Pay the Bulldog Print invoice first,** since it's already late.\n- **The margin is very thin.** Any other expense before rent clears could leave the shop unable to pay it in full.\n- **The data may be out of date.** The shop's system treats \"today\" as Aug 31, 2026, but the actual date is Oct 13. If the books haven't been updated since then, both bills may already be paid or more overdue, and other bills may now be due. Nothing appears under payments already made.",
+      "database_cross_check": {
+        "queried_directly_against": "data/campus_customs_new.db",
+        "sql": "SELECT (SELECT balance FROM cash_accounts WHERE name='checking') AS cash, (SELECT SUM(amount) FROM invoices WHERE status!='paid') AS invoices_open, (SELECT SUM(monthly_rent) FROM leases) AS rent",
+        "result": {
+          "cash": 3400.0,
+          "invoices_open": 840.0,
+          "rent": 2400.0
+        },
+        "matches_tool_output": true,
+        "comparison": "tool cash=3400 vs db 3400.0; tool total_due=3240 vs db 840.0+2400.0=3240.0"
+      }
+    },
+    {
+      "prompt_to_vibe_coder": "who can reprint CC-TEE-WHITE and is anything blocking them from shipping? only use the campus customs mcp tool",
+      "tool_name": "mcp__campus-customs__check_vendor_can_ship",
+      "tool_arguments": {
+        "sku": "CC-TEE-WHITE"
+      },
+      "tool_output": {
+        "sku": "CC-TEE-WHITE",
+        "product_name": "Classic Bulldog Tee",
+        "matched": true,
+        "date_today": "2026-08-31",
+        "vendors": [
+          {
+            "id": 1,
+            "name": "Bulldog Print Co",
+            "specialty": "apparel reprint",
+            "lead_days": 5,
+            "unpaid_invoices": [
+              {
+                "id": 501,
+                "amount": 840,
+                "due_date": "2026-08-28",
+                "status": "open",
+                "description": "Rush reprint CC-TEE-WHITE S",
+                "days_until_due": -3,
+                "overdue": true
+              }
+            ],
+            "blocked": true,
+            "amount_to_unblock": 840,
+            "earliest_delivery_if_unblocked": "2026-09-05"
+          }
+        ],
+        "blocked": true
+      },
+      "ticket_this_unlocks": "101",
+      "vibe_coder_answer": "**Bulldog Print Co** (vendor #1, apparel reprint) restocks CC-TEE-WHITE, the Classic Bulldog Tee. **They're blocked right now.**\n\n- **What's blocking them:** Invoice #501 for **$840** is still open. It was a rush reprint of CC-TEE-WHITE in size S, due 2026-08-28, and it's 3 days overdue. Bulldog Print Co won't ship anything new until it's paid.\n- **Lead time:** 5 days. If the $840 is paid today, the earliest delivery is **2026-09-05**.\n\nThe campus-customs tool's date is set to **2026-08-31**, but today is 2026-10-13. If the shop's date is out of date, the \"3 days overdue\" and the Sept 5 delivery date will be off too, so check those before you promise a customer anything.",
+      "database_cross_check": {
+        "queried_directly_against": "data/campus_customs_new.db",
+        "sql": "SELECT v.name, v.lead_days, i.id AS invoice_id, i.amount, i.status FROM vendors v JOIN invoices i ON i.vendor_id=v.id WHERE v.specialty LIKE '%apparel%'",
+        "result": [
+          {
+            "name": "Bulldog Print Co",
+            "lead_days": 5,
+            "invoice_id": 501,
+            "amount": 840.0,
+            "status": "open"
+          }
+        ],
+        "matches_tool_output": true,
+        "comparison": "tool vendor=Bulldog Print Co/lead 5d/invoice 501 @ 840 vs db Bulldog Print Co/lead 5d/invoice 501 @ 840.0 (open)"
+      }
+    }
+  ],
+  "notes": [
+    "First attempt at the check_stock prompt said only 'ticket 101' with no SKU. The vibe coder correctly refused to call the tool, because none of the three tools can look up a ticket row - the SKU has to come from the board. Prompt was re-run naming CC-TEE-WHITE.",
+    "First attempt at the vendor prompt had the vibe coder guess sku='white tee' and sku='TEE-WHT'. check_vendor_can_ship returned matched=false with a reason and the full vendor list instead of inventing a match, which is the 'never invent data' rule working."
+  ]
+}
