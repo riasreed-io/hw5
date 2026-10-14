@@ -44,8 +44,10 @@ python3 -m venv .venv
 cp .env.example .env     # then put your PORTKEY_API_KEY in it
 ```
 
-Every agent uses **`gpt-6-luna` through Portkey** and the code refuses to start
-with any other model.
+Every agent uses **`gpt-6-luna` through Portkey**, and `backend/agents.py`
+raises rather than start with any other model. Every run also records the model
+it used: each `run_start` line in `output/audit_trail.json` carries
+`"model": "gpt-6-luna (via Portkey)"`, across all 14 runs in the trail.
 
 ---
 
@@ -175,3 +177,23 @@ Both payments land in `payments` stamped `approved_by = "Rias Reed"`, invoice
 | `output/mcp_smoke.json` | Evidence of each MCP tool being called by the vibe coder |
 | `output/audit_trail.json` | Append-only: every tool call, delegation, decision and approval, across every run |
 | `backend/prompts/` | The five agent prompts, one file each |
+| `output/screenshots/` | The board captured for each resolved ticket |
+
+---
+
+## Verifying a run yourself
+
+After a run, check the shop's own books rather than taking the board's word:
+
+```bash
+sqlite3 data/campus_customs_new.db \
+  "select id, status from tickets;
+   select name, balance from cash_accounts;
+   select id, kind, amount, approved_by from payments;
+   select id, status from invoices;"
+```
+
+A correct full run leaves all three tickets `resolved`, checking at `160.0`,
+two rows in `payments` both approved by a named human, and invoice 501 `paid`.
+No row in `payments` should ever have a blank `approved_by` — the pay tool
+refuses it.

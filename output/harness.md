@@ -459,6 +459,11 @@ not arrive until 2026-09-05. The prompt was amended between passes 2 and 3 to
 allow closing when the only remaining step is outside the shop's hands, with
 the outstanding item named in the resolution.
 
+Ticket 103 was run once more afterwards so the committed working copy ends in
+the same state the documentation describes — all three resolved, checking at
+160.00. Every run, including that one and the ones driven from the dashboard,
+is appended to `output/audit_trail.json`; no run was ever removed from it.
+
 Artifacts from this run: `output/resolved_tickets.json`,
 `output/resolved_board.html` (with `output/screenshots/`), the Actual and Cash
 tabs of `output/desk_tickets.html`, and every step appended to

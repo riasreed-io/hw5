@@ -1,10 +1,8 @@
 {
   "mcpServers": {
     "campus-customs": {
-      "command": "/Users/rias/Projects/mgt-409-ai-foundations/homework 5/.venv/bin/python",
-      "args": [
-        "/Users/rias/Projects/mgt-409-ai-foundations/homework 5/mcp_server/server.py"
-      ]
+      "command": ".venv/bin/python",
+      "args": ["mcp_server/server.py"]
     }
   }
 }

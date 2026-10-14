@@ -103,3 +103,18 @@ Set `CAMPUS_CUSTOMS_DB` to point the server at a throwaway copy of the database
 for testing, so a test run never dirties the real working copy.
 
 Port 8002 keeps 8000 free for the FastAPI backend.
+
+## Connecting a vibe coder to it
+
+`.mcp.json` in the repo root registers this server as `campus-customs`, using
+paths relative to the repo root:
+
+```json
+{"mcpServers": {"campus-customs": {"command": ".venv/bin/python",
+                                   "args": ["mcp_server/server.py"]}}}
+```
+
+Create the virtualenv at the repo root first (`python3 -m venv .venv &&
+.venv/bin/pip install -r requirements.txt`) and the entry works from a fresh
+clone without editing any paths. `output/mcp_smoke.json` is the evidence of
+each tool being called this way.
